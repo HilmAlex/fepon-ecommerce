@@ -1,11 +1,12 @@
 import type { AppProps } from "next/app";
 import createCache, { EmotionCache } from "@emotion/cache";
 import { CacheProvider } from "@emotion/react";
+import { StoreProvider } from "@utils/Store";
 
 const clientSideEmotionCache = createCache({ key: "css" });
 
-interface MyAppProps extends AppProps{
-  emotionCache: EmotionCache
+interface MyAppProps extends AppProps {
+  emotionCache: EmotionCache;
 }
 
 function MyApp({
@@ -15,7 +16,9 @@ function MyApp({
 }: MyAppProps) {
   return (
     <CacheProvider value={emotionCache}>
-      <Component {...pageProps} />
+      <StoreProvider>
+        <Component {...pageProps} />
+      </StoreProvider>
     </CacheProvider>
   );
 }
