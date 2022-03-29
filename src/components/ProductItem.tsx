@@ -5,6 +5,7 @@ import {
   CardActions,
   CardContent,
   CardMedia,
+  Rating,
   Typography,
 } from "@mui/material";
 import { urlForThumbnail } from "@utils/image";
@@ -12,10 +13,10 @@ import { productProps } from "@utils/types";
 import NextLink from "next/link";
 import React from "react";
 
-export default function ProductItem({ product}: {product: productProps}){
+export default function ProductItem({ product }: { product: productProps }) {
   return (
     <Card>
-      <NextLink href={`/product/${product.slug}`} passHref>
+      <NextLink href={`/product/${product.slug.current}`} passHref>
         <CardActionArea>
           <CardMedia
             component="img"
@@ -24,9 +25,7 @@ export default function ProductItem({ product}: {product: productProps}){
           />
           <CardContent>
             <Typography>{product.name}</Typography>
-            <Typography>
-              {product.rating} ({product.numReviews} reviews)
-            </Typography>
+            <Rating value={product?.rating} readOnly></Rating>
           </CardContent>
         </CardActionArea>
       </NextLink>

@@ -13,6 +13,8 @@ export interface imageProductProps {
 
 export interface productProps {
   name: string;
+  title: string;
+  description: string;
   price: number;
   slug: slugProductProps;
   image: imageProductProps;
@@ -25,6 +27,12 @@ export interface productProps {
 
 export interface dataProps {
   products?: productProps[];
+  error?: string;
+  loading: boolean;
+}
+
+export interface productScreenProps {
+  product?: productProps;
   error?: string;
   loading: boolean;
 }

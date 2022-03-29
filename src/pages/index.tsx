@@ -31,9 +31,9 @@ const Home: NextPage = () => {
     <Layout>
       {loading && <CircularProgress />}
 
-      {error && <Alert variant="danger">{error}</Alert>}
+      {error && !loading && <Alert variant="danger">{error}</Alert>}
 
-      {!error && (
+      {!error && !loading && (
         <Grid container spacing={3}>
           {products?.map((product) => (
             <Grid item md={4} key={product.slug.current}>
