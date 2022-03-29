@@ -1,23 +1,47 @@
-import { Typography } from "@mui/material";
+import { Alert, CircularProgress, Grid, Typography } from "@mui/material";
 import type { NextPage } from "next";
-import Head from "next/head";
 import Layout from "@components/Layout";
+import { useEffect, useState } from "react";
+import client from "@utils/client";
+import { dataProps } from "@utils/types";
+import ProductItem from "@components/ProductItem";
 
 const Home: NextPage = () => {
+  const [data, setData] = useState<dataProps>({
+    products: [],
+    error: "",
+    loading: true,
+  });
+
+  const { loading, error, products } = data;
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const products = await client.fetch(`*[_type == "product"]`);
+        setData({ products, loading: false });
+      } catch (err) {
+        setData({ error: (err as Error).message, loading: false });
+      }
+    };
+    fetchData();
+  }, []);
+
   return (
     <Layout>
-      <Head>
-        <title>FEPON Store</title>
-        <meta
-          name="description"
-          content="Tienda digital de la Federación de Estudiantes de Escuela Politécnica Nacional FEPON"
-        />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+      {loading && <CircularProgress />}
 
-      <Typography component="h1" variant="h1">
-        Tienda FEPON
-      </Typography>
+      {error && <Alert variant="danger">{error}</Alert>}
+
+      {!error && (
+        <Grid container spacing={3}>
+          {products?.map((product) => (
+            <Grid item md={4} key={product.slug.current}>
+              <ProductItem product={product}></ProductItem>
+            </Grid>
+          ))}
+        </Grid>
+      )}
     </Layout>
   );
 };
