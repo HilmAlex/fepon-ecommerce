@@ -1,12 +1,11 @@
 import { Typography } from "@mui/material";
 import type { NextPage } from "next";
 import Head from "next/head";
-import Image from "next/image";
-import styles from "../styles/Home.module.css";
+import Layout from "@components/Layout";
 
 const Home: NextPage = () => {
   return (
-    <div>
+    <Layout>
       <Head>
         <title>FEPON Store</title>
         <meta
@@ -19,7 +18,7 @@ const Home: NextPage = () => {
       <Typography component="h1" variant="h1">
         Tienda FEPON
       </Typography>
-    </div>
+    </Layout>
   );
 };
 
