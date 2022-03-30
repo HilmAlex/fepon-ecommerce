@@ -41,7 +41,7 @@ export interface productScreenStateType {
 }
 
 export interface cartType{
-  cartItems: Array<productProps>
+  cartItems: Array<DispatchStorePayloadType>
 }
 export interface StoreStateType {
   darkMode: boolean;

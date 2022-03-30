@@ -26,7 +26,7 @@ function reducer(state: StoreStateType, action: DispatchStoreType) {
       return { ...state, darkMode: true };
     case "DARK_MODE_OFF":
       return { ...state, darkMode: false };
-    case "CART_ADD_ITEM":
+    case "CART_ADD_ITEM": {
       const newItem = action.payload;
       const existItem = state.cart.cartItems.find(
         (item) => item._key === newItem._key
@@ -36,10 +36,20 @@ function reducer(state: StoreStateType, action: DispatchStoreType) {
             item._key === existItem._key ? newItem : item
           )
         : [...state.cart.cartItems, newItem];
-      
-        Cookies.set('cartItems', JSON.stringify(cartItems))
 
-        return {...state, cart: {...state.cart, cartItems}}
+      Cookies.set("cartItems", JSON.stringify(cartItems));
+
+      return { ...state, cart: { ...state.cart, cartItems } };
+    }
+    case "CART_REMOVE_ITEM": {
+      const cartItems = state.cart.cartItems.filter(
+        (item) => item._key !== action.payload._key
+      );
+
+      Cookies.set("cartItems", JSON.stringify(cartItems));
+
+      return { ...state, cart: { ...state.cart, cartItems } };
+    }
     default:
       return state;
   }

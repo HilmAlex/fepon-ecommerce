@@ -14,7 +14,11 @@ import {
 } from "@mui/material";
 import classes from "@utils/classes";
 import client from "@utils/client";
-import { imageProductProps, productScreenStateType, slugProductProps } from "@utils/types";
+import {
+  imageProductProps,
+  productScreenStateType,
+  slugProductProps,
+} from "@utils/types";
 import { useContext, useEffect, useState } from "react";
 import NextLink from "next/link";
 import Image from "next/image";
@@ -22,12 +26,14 @@ import { urlFor, urlForThumbnail } from "@utils/image";
 import { Store } from "@utils/Store";
 import axios from "axios";
 import { useSnackbar } from "notistack";
+import { useRouter } from "next/router";
 
 export interface productScreenProps {
   slug: string;
 }
 
 export default function ProductScreen(props: productScreenProps) {
+  const router = useRouter()
   const { slug } = props;
   const {
     state: { cart },
@@ -84,7 +90,12 @@ export default function ProductScreen(props: productScreenProps) {
         quantity,
       },
     });
-    enqueueSnackbar(`${product?.name} se ha añadido al carrito`, {variant:'success'})
+
+    enqueueSnackbar(`${product?.name} se ha añadido al carrito`, {
+      variant: "success",
+    });
+
+    router.push('/cart')
   };
 
   return (
