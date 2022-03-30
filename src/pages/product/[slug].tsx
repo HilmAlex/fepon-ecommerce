@@ -14,16 +14,29 @@ import {
 } from "@mui/material";
 import classes from "@utils/classes";
 import client from "@utils/client";
-import { productScreenProps } from "@utils/types";
-import { useEffect, useState } from "react";
+import { imageProductProps, productScreenStateType, slugProductProps } from "@utils/types";
+import { useContext, useEffect, useState } from "react";
 import NextLink from "next/link";
 import Image from "next/image";
-import { urlFor } from "@utils/image";
+import { urlFor, urlForThumbnail } from "@utils/image";
+import { Store } from "@utils/Store";
+import axios from "axios";
+import { useSnackbar } from "notistack";
 
-export default function ProductScreen(props) {
+export interface productScreenProps {
+  slug: string;
+}
+
+export default function ProductScreen(props: productScreenProps) {
   const { slug } = props;
+  const {
+    state: { cart },
+    dispatch,
+  } = useContext(Store);
 
-  const [state, setState] = useState<productScreenProps>({
+  const { enqueueSnackbar } = useSnackbar();
+
+  const [state, setState] = useState<productScreenStateType>({
     product: null,
     loading: true,
     error: "",
@@ -46,6 +59,34 @@ export default function ProductScreen(props) {
     fetchData();
   }, []);
 
+  const addToCartHandler = async () => {
+    const existItem = cart.cartItems.find((x) => x._id === product._id);
+    const quantity = existItem ? existItem.quantity + 1 : 1;
+
+    const { data } = await axios.get(`/api/products/${product._id}`);
+
+    if (data.countInStock < quantity) {
+      enqueueSnackbar("Lo siento, El producto no se encuentra en stock", {
+        variant: "error",
+      });
+      return;
+    }
+
+    dispatch({
+      type: "CART_ADD_ITEM",
+      payload: {
+        _key: product?._id as string,
+        name: product?.name as string,
+        countInStock: product?.countInStock as number,
+        slug: product?.slug as unknown as string,
+        price: product?.price as number,
+        image: urlForThumbnail(product?.image as imageProductProps),
+        quantity,
+      },
+    });
+    enqueueSnackbar(`${product?.name} se ha añadido al carrito`, {variant:'success'})
+  };
+
   return (
     <Layout title={product?.title}>
       {loading && <CircularProgress />}
@@ -55,7 +96,7 @@ export default function ProductScreen(props) {
           <Box sx={classes.section}>
             <NextLink href="/" passHref>
               <Link>
-                <Typography>back to result</Typography>
+                <Typography>Regresar</Typography>
               </Link>
             </NextLink>
           </Box>
@@ -78,15 +119,15 @@ export default function ProductScreen(props) {
                     {product?.name}
                   </Typography>
                 </ListItem>
-                <ListItem>Category: {product?.category}</ListItem>
-                <ListItem>Brand: {product?.brand}</ListItem>
+                <ListItem>Categoria: {product?.category}</ListItem>
+                <ListItem>Marca: {product?.brand}</ListItem>
                 <ListItem>
                   <Rating value={product?.rating} readOnly></Rating>
                   <Typography sx={classes.smallText}>
-                    ({product?.numReviews} reviews)
+                    ({product?.numReviews} reseñas)
                   </Typography>
                 </ListItem>
-                <ListItem>Description: {product?.description}</ListItem>
+                <ListItem>Descripción: {product?.description}</ListItem>
               </List>
             </Grid>
             <Grid item md={3} xs={12}>
@@ -105,20 +146,24 @@ export default function ProductScreen(props) {
                   <ListItem>
                     <Grid container>
                       <Grid item xs={6}>
-                        <Typography>Status</Typography>
+                        <Typography>Estado</Typography>
                       </Grid>
                       <Grid item xs={6}>
                         <Typography>
                           {product?.countInStock > 0
-                            ? "In Stock"
-                            : "Unavailable"}
+                            ? "En Stock"
+                            : "No disponible"}
                         </Typography>
                       </Grid>
                     </Grid>
                   </ListItem>
                   <ListItem>
-                    <Button fullWidth variant="contained">
-                      Add to cart
+                    <Button
+                      onClick={addToCartHandler}
+                      fullWidth
+                      variant="contained"
+                    >
+                      Añadir al carrito
                     </Button>
                   </ListItem>
                 </List>

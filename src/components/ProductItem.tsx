@@ -32,7 +32,7 @@ export default function ProductItem({ product }: { product: productProps }) {
       <CardActions>
         <Typography>${product.price}</Typography>
         <Button size="small" color="primary">
-          Add to cart
+          Añadir al carrito
         </Button>
       </CardActions>
     </Card>

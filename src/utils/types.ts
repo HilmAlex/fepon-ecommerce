@@ -1,4 +1,6 @@
-interface slugProductProps {
+import { Dispatch, ReactChild } from "react";
+
+export interface slugProductProps {
   _type: string;
   current: string;
 }
@@ -12,6 +14,7 @@ export interface imageProductProps {
 }
 
 export interface productProps {
+  _id: string;
   name: string;
   title: string;
   description: string;
@@ -31,8 +34,39 @@ export interface dataProps {
   loading: boolean;
 }
 
-export interface productScreenProps {
-  product?: productProps;
+export interface productScreenStateType {
+  product: productProps | null;
   error?: string;
   loading: boolean;
+}
+
+export interface cartType{
+  cartItems: Array<productProps>
+}
+export interface StoreStateType {
+  darkMode: boolean;
+  cart: cartType;
+}
+
+export interface DispatchStorePayloadType {
+  _key: string;
+  name: string;
+  countInStock: number;
+  slug: string;
+  price: number;
+  image: string;
+  quantity: number;
+}
+export interface DispatchStoreType {
+  type: string;
+  payload: DispatchStorePayloadType;
+}
+
+export interface StoreContextType {
+  state: StoreStateType;
+  dispatch: Dispatch<DispatchStoreType>;
+}
+
+export interface StoreProviderProps {
+  children: ReactChild;
 }
